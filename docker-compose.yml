@@ -75,6 +75,17 @@ services:
       - crud-api
     restart: unless-stopped
 
+  loadgen:
+    build:
+      context: .
+      dockerfile: deploy/loadgen/Dockerfile
+    container_name: loadgen
+    profiles: ["tools"]
+    volumes:
+      - logpipe_logs:/var/log/logpipe
+    depends_on:
+      - nginx
+
 volumes:
   clickhouse_data:
   logpipe_logs:
