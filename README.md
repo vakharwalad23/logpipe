@@ -252,11 +252,23 @@ Extra slog attributes that do not map to a column (for example `task_id`) are
 folded into the `fields` map on the app table. NGINX reports request time in
 seconds, so the aggregator multiplies it by 1000 to fill `duration_ms`.
 
+## Planned experiments
+
+Over the next day or two I plan to run a few experiments against this stack to
+see how ClickHouse behaves under different settings:
+
+- Add skip indexes and compare query speed before and after.
+- Compare daily versus monthly partitioning.
+- Let the TTL expire old rows and confirm they are removed.
+- Check the on-disk compression ratio.
+
+Notes and results will be added here as I run them.
+
 ## References
 
 These are the main sources used while building this.
 
-- Zerodha Engineering blog, https://zerodha.tech : inspiration for the file based
+- Zerodha Engineering blog, https://zerodha.tech/blog/logging-at-zerodha/ : inspiration for the file based
   JSON logging and the Vector to ClickHouse approach.
 - ClickHouse MergeTree docs,
   https://clickhouse.com/docs/en/engines/table-engines/mergetree-family/mergetree
