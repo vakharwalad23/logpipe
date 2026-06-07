@@ -1,5 +1,8 @@
 .PHONY: up down logs load-traffic load-synthetic
 
+STREAM ?= app
+COUNT ?= 1000000
+
 up:
 	docker compose up -d
 
@@ -13,4 +16,4 @@ load-traffic:
 	go run ./cmd/loadgen -mode traffic -rate 200 -concurrency 50 -duration 30s
 
 load-synthetic:
-	docker compose run --rm loadgen -mode synthetic -stream app -count 1000000
+	docker compose run --rm loadgen -mode synthetic -stream $(STREAM) -count $(COUNT)
