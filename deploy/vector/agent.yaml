@@ -1,11 +1,12 @@
 sources:
-  demo:
-    type: demo_logs
-    format: apache_common
-    interval: 0.5
+  app_files:
+    type: file
+    include:
+      - /var/log/logpipe/*.log
+    read_from: beginning
 
 sinks:
   to_aggregator:
     type: vector
-    inputs: [demo]
+    inputs: [app_files]
     address: vector-aggregator:6000

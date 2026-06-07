@@ -44,6 +44,7 @@ services:
     container_name: vector-agent
     volumes:
       - ./deploy/vector/agent.yaml:/etc/vector/vector.yaml:ro
+      - logpipe_logs:/var/log/logpipe:ro
     command: ["--config", "/etc/vector/vector.yaml"]
     depends_on:
       vector-aggregator:

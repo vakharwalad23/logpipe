@@ -7,18 +7,60 @@ sources:
     type: vector
     address: 0.0.0.0:6000
 
-sinks:
-  to_clickhouse:
-    type: clickhouse
+transforms:
+  parse:
+    type: remap
     inputs: [from_agent]
+    source: |
+      . = parse_json!(.message)
+
+  drop_health:
+    type: filter
+    inputs: [parse]
+    condition: '!(.log_type == "http" && .path == "/healthz")'
+
+  route:
+    type: route
+    inputs: [drop_health]
+    route:
+      app: '.log_type == "app"'
+      http: '.log_type == "http"'
+
+  shape_app:
+    type: remap
+    inputs: [route.app]
+    source: |
+      .fields = {}
+      if exists(.task_id) { .fields.task_id = to_string!(.task_id); del(.task_id) }
+      if exists(.title)   { .fields.title   = to_string!(.title);   del(.title) }
+      del(.log_type)
+  
+  shape_http:
+    type: remap
+    inputs: [route.http]
+    source: |
+      .duration_ms = to_int(round(to_float!(.duration_ms) * 1000))
+      del(.log_type)
+
+sinks:
+  app_to_clickhouse:
+    type: clickhouse
+    inputs: [shape_app]
     endpoint: http://clickhouse:8123
     database: logs
-    table: vector_scratch
-    auth:
-      strategy: basic
-      user: logstore
-      password: logstore
+    table: app_logs
+    auth: { strategy: basic, user: logstore, password: logstore }
     skip_unknown_fields: true
     date_time_best_effort: true
-    batch:
-      timeout_secs: 5
+    batch: { timeout_secs: 5 }
+
+  http_to_clickhouse:
+    type: clickhouse
+    inputs: [shape_http]
+    endpoint: http://clickhouse:8123
+    database: logs
+    table: http_logs
+    auth: { strategy: basic, user: logstore, password: logstore }
+    skip_unknown_fields: true
+    date_time_best_effort: true
+    batch: { timeout_secs: 5 }
