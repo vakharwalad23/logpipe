@@ -1,0 +1,11 @@
+sources:
+  demo:
+    type: demo_logs
+    format: apache_common
+    interval: 0.5
+
+sinks:
+  to_aggregator:
+    type: vector
+    inputs: [demo]
+    address: vector-aggregator:6000

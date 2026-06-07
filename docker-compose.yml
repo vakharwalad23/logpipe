@@ -23,5 +23,33 @@ services:
       - clickhouse_data:/var/lib/clickhouse
       - ./deploy/clickhouse:/docker-entrypoint-initdb.d
 
+  vector-aggregator:
+    image: timberio/vector:0.56.0-alpine
+    container_name: vector-aggregator
+    volumes:
+      - ./deploy/vector/aggregator.yaml:/etc/vector/vector.yaml:ro
+    command: ["--config", "/etc/vector/vector.yaml"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8686/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      clickhouse:
+        condition: service_healthy
+    restart: unless-stopped
+
+  vector-agent:
+    image: timberio/vector:0.56.0-alpine
+    container_name: vector-agent
+    volumes:
+      - ./deploy/vector/agent.yaml:/etc/vector/vector.yaml:ro
+    command: ["--config", "/etc/vector/vector.yaml"]
+    depends_on:
+      vector-aggregator:
+        condition: service_healthy
+    restart: unless-stopped
+
+
 volumes:
   clickhouse_data:

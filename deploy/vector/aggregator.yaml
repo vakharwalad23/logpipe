@@ -1,0 +1,24 @@
+api:
+  enabled: true
+  address: 0.0.0.0:8686
+
+sources:
+  from_agent:
+    type: vector
+    address: 0.0.0.0:6000
+
+sinks:
+  to_clickhouse:
+    type: clickhouse
+    inputs: [from_agent]
+    endpoint: http://clickhouse:8123
+    database: logs
+    table: vector_scratch
+    auth:
+      strategy: basic
+      user: logstore
+      password: logstore
+    skip_unknown_fields: true
+    date_time_best_effort: true
+    batch:
+      timeout_secs: 5
