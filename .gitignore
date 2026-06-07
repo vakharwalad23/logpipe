@@ -1,0 +1,61 @@
+# ---- Go ----
+# Build output directories
+/bin/
+/dist/
+/build/
+
+# Loose binaries built at repo root (e.g. `go build ./cmd/crud-api`)
+/crud-api
+/query-api
+/loadgen
+
+# Compiled objects
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test & coverage output
+*.test
+*.out
+coverage.*
+/coverage/
+
+# Go workspace (uncomment only if you switch to a multi-module go.work setup)
+# go.work
+# go.work.sum
+
+# ---- Environment & secrets ----
+.env
+.env.*
+!.env.example
+
+# ---- Runtime data ----
+# Only relevant if you bind-mount locally instead of using Docker named volumes.
+# Covers service log files, ClickHouse data, and Vector disk buffers.
+*.log
+/logs/
+/data/
+clickhouse-data/
+vector-data/
+
+# ---- Frontend (optional query-api UI under web/) ----
+node_modules/
+web/dist/
+
+# ---- Editors / IDEs ----
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.bak
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ---- Local planning / handoff docs (not committed) ----
+PLAN.md
