@@ -1,3 +1,5 @@
+data_dir: /var/lib/vector
+
 api:
   enabled: true
   address: 0.0.0.0:8686
@@ -53,6 +55,10 @@ sinks:
     skip_unknown_fields: true
     date_time_best_effort: true
     batch: { timeout_secs: 5 }
+    buffer:
+      type: disk
+      max_size: 1073741824
+      when_full: block
 
   http_to_clickhouse:
     type: clickhouse
@@ -64,3 +70,7 @@ sinks:
     skip_unknown_fields: true
     date_time_best_effort: true
     batch: { timeout_secs: 5 }
+    buffer:
+      type: disk
+      max_size: 1073741824
+      when_full: block

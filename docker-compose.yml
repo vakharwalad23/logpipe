@@ -28,6 +28,7 @@ services:
     container_name: vector-aggregator
     volumes:
       - ./deploy/vector/aggregator.yaml:/etc/vector/vector.yaml:ro
+      - vector_aggregator_data:/var/lib/vector
     command: ["--config", "/etc/vector/vector.yaml"]
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1:8686/health"]
@@ -89,3 +90,4 @@ services:
 volumes:
   clickhouse_data:
   logpipe_logs:
+  vector_aggregator_data:
