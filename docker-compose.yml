@@ -50,6 +50,30 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
+  crud-api:
+    build:
+      context: .
+      dockerfile: deploy/crud-api/Dockerfile
+    container_name: crud-api
+    environment:
+      - LOG_FILE=/var/log/logpipe/app.log
+      - ADDR=:8080
+    volumes:
+      - logpipe_logs:/var/log/logpipe
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx
+    volumes:
+      - ./deploy/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+      - logpipe_logs:/var/log/logpipe
+    ports:
+      - "8080:8080"
+    depends_on:
+      - crud-api
+    restart: unless-stopped
 
 volumes:
   clickhouse_data:
+  logpipe_logs:
