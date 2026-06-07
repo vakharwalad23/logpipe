@@ -1,4 +1,4 @@
-.PHONY: up down logs load-traffic load-synthetic
+.PHONY: up down down-v logs load-traffic load-synthetic
 
 STREAM ?= app
 COUNT ?= 1000000
@@ -8,6 +8,9 @@ up:
 
 down:
 	docker compose down
+
+down-v:
+	docker compose down -v
 
 logs:
 	docker compose logs -f
