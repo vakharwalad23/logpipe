@@ -87,7 +87,23 @@ services:
     depends_on:
       - nginx
 
+  ch-ui:
+    image: ghcr.io/caioricciuti/ch-ui:latest
+    container_name: ch-ui
+    profiles: ["tools"]
+    ports:
+      - "5521:3488"
+    environment:
+      - CLICKHOUSE_URL=http://clickhouse:8123
+      - CLICKHOUSE_USER=logstore
+      - CLICKHOUSE_PASSWORD=logstore
+    volumes:
+      - ch_ui_data:/app/data
+    depends_on:
+      - clickhouse
+
 volumes:
   clickhouse_data:
   logpipe_logs:
   vector_aggregator_data:
+  ch_ui_data:
